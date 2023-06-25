@@ -1,6 +1,7 @@
 'use strict';
-const { Model } = require('sequelize');
-
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -9,79 +10,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-       
-
+      User.hasMany(models.Expense, {foreignKey:'userId'});
+      User.hasMany(models.Income ,{foreignKey:'userId'})
+      // define association here
     }
+   
   }
-  User.init(
-      {
-        id: {
-          type: DataTypes.UUID,
-          defaultValue: DataTypes.UUIDV4,
-          primaryKey: true,
-        },
-        fullname: {
-          type: DataTypes.STRING,
-          set(val) {
-            this.setDataValue('fullname', val.toLowerCase());
-          },
-        },
-        email: {
-          type: DataTypes.STRING,
-          set(val) {
-            this.setDataValue('email', val.toLowerCase());
-          },
-        },
-        image: {
-          type: DataTypes.STRING,
-        },
-        password: {
-          type: DataTypes.STRING,
-        },
-        mfa_secret: {
-          type: DataTypes.STRING,
-        },
-        gender: {
-          type: DataTypes.STRING,
-          set(val) {
-            this.setDataValue('gender', val.toLowerCase());
-          },
-        },
-        birthdate: {
-          type: DataTypes.DATE,
-          allowNull: true,
-        },
+  User.init({
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    nickname: DataTypes.STRING,
+    email: DataTypes.STRING,
+    phone_number: DataTypes.STRING,
+    password: DataTypes.STRING,
+    positionId: DataTypes.STRING,
+    location: DataTypes.STRING,
+    job:DataTypes.STRING,
+    otherFields: DataTypes.STRING
 
-        roleId: {
-          type: DataTypes.INTEGER,
-          defaultValue: 2,
-          // Admin(1), teacher(2)
-        },
-        accountStatus: {
-          type: DataTypes.STRING,
-          defaultValue: 'active',
-        },
-
-        lastPasswordUpdate: {
-          type: DataTypes.DATE,
-          allowNull: true,
-        },
-      },
-      {
-        sequelize,
-        modelName: 'User',
-        getterMethods: {
-          mfa_token() {
-            if (this.mfa_secret) {
-              return speakeasy.totp({
-                secret: this.mfa_secret,
-                encoding: 'base32',
-              });
-            }
-            return null;
-          },
-        },
-      },
-  );
+  }, {
+    sequelize,
+    modelName: 'User',
+  });
   return User;
 };
