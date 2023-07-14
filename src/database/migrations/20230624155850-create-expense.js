@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
+      UserId: {
         type: Sequelize.STRING,
       },
 
@@ -19,6 +19,13 @@ module.exports = {
 
       amount: {
         type: Sequelize.FLOAT,
+      },
+      creatorName:{
+        type:Sequelize.STRING
+      },
+
+      category:{
+        type:Sequelize.STRING
       },
 
       date: {

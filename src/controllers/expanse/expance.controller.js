@@ -4,6 +4,7 @@ const User = db.users;
 const Expense = db.expenses;
 const Amount = db.amounts;
 
+// Add expenses
 const AddExpenses = async (req, res) => {
   const { id } = req.params;
 
@@ -20,15 +21,17 @@ const AddExpenses = async (req, res) => {
     const expenses = await Expense.findAll();
     let totalExpense = 0;
     for (const expense of expenses) {
-      totalExpense += expense.amount;
+      totalExpense += parseInt(expense.amount);
     }
-    totalExpense += amount;
+    totalExpense += parseInt(amount);
 
     const expense = await Expense.create({
       description,
       amount,
       UserId: user.id,
       TotalExpense: totalExpense,
+      creatorName: user.first_name, // Assign creatorName
+      category: "Expense", // Assign category
     });
 
     // Save TotalExpense into the Amount table
@@ -46,7 +49,14 @@ const AddExpenses = async (req, res) => {
 
     return res.status(201).json({
       message: "New expense added",
-      expense,
+      expense: {
+        description: expense.description,
+        amount: expense.amount,
+        UserId: expense.UserId,
+        TotalExpense: expense.TotalExpense,
+        creatorName: expense.creatorName, // Confirm that creatorName is being saved
+        category: expense.category, // Confirm that category is being saved
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -55,4 +65,69 @@ const AddExpenses = async (req, res) => {
   }
 };
 
-export  {AddExpenses};
+// Get all expenses
+const getAllExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.findAll();
+
+    return res.status(200).json({
+      expenses,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+const deleteExpenseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find expense
+    const expense = await Expense.findByPk(id);
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    // Get total expense before deleting
+    const totalExpense = expense.TotalExpense;
+
+    // Delete expense
+    await expense.destroy();
+
+    // Update total expense 
+    const amount = await Amount.findOne();
+    await amount.update({
+      ExpenseAmount: totalExpense - expense.amount
+    });
+
+    res.status(200).json({ message: "Expense deleted successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete all expenses
+const deleteAllExpenses = async (req, res) => {
+  try {
+    // Delete all expenses
+    await Expense.destroy({ truncate: false });
+    
+    // Reset total expense to 0
+    const amount = await Amount.findOne();
+    await amount.update({ ExpenseAmount: 0 });
+
+    res.status(200).json({ message: "All expenses deleted" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+export {
+  AddExpenses,
+  getAllExpenses,
+  deleteExpenseById,
+  deleteAllExpenses
+};
+

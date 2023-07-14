@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
     res
       .status(200)
       .send(
-        `<h1 style='text-align: center; color: #CCD6F6; margin-top: 20vh; background: #4700b8; padding: 150px;'>Welcome to Parental control Proj apis</h1>`,
+        `<h1 style='text-align: center; color: #CCD6F6; margin-top: 20vh; background: #F8B205; padding: 150px;'>Welcome to  Online Family Expenses Monitoring System Proj apis</h1>`,
       );
   });
   

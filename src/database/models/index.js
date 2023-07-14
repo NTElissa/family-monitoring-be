@@ -45,6 +45,8 @@ db.users = require('./user')(sequelize, Sequelize);
 db.expenses = require('./expense')(sequelize, Sequelize);
 db.incomes =require('./income')(sequelize,Sequelize);
 db.amounts =require('./amount')(sequelize,Sequelize);
+db.Budgets =require('./budget')(sequelize ,Sequelize);
+db.messages=require('./messages')(sequelize ,Sequelize);
 
 
 module.exports = db;
