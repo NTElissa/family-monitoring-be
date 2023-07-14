@@ -9,8 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      amount: {
+      IncomeAmount: {
         type: Sequelize.FLOAT
+      }, 
+      ExpenseAmount:{
+        type:Sequelize.FLOAT
       },
       TotalAmount:{
      type: Sequelize.FLOAT

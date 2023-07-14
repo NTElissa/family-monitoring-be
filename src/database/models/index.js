@@ -46,4 +46,5 @@ db.expenses = require('./expense')(sequelize, Sequelize);
 db.incomes =require('./income')(sequelize,Sequelize);
 db.amounts =require('./amount')(sequelize,Sequelize);
 
+
 module.exports = db;
